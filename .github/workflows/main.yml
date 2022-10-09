@@ -24,7 +24,6 @@ jobs:
 
     - name: Test with flake8
       run: |
-        flake8 --extend-ignore=E4,E51,W234 dir/
         python -m flake8
 
   build_and_push_to_docker_hub:
