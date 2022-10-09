@@ -73,6 +73,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
           script: |
+            cd ${{ secrets.USER }}
             sudo docker compose down
             sudo docker pull zolkovd/foodgram-backend:latest
             touch .env
