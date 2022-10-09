@@ -50,6 +50,7 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/foodgram-backend:latest
           context: backend/
+          file: ./backend/Dockerfile
           no-cache: true
 
       - name: Push frontend to Docker Hub
@@ -59,6 +60,7 @@ jobs:
           context: frontend/
           no-cache: true
           tags: ${{ secrets.DOCKER_USERNAME }}/foodgram-frontend:latest
+          file: ./frontend/Dockerfile
 
   deploy:
     if: github.ref == 'refs/heads/master'
@@ -73,6 +75,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
           script: |
+            cd ${{ secrets.USER }}
             sudo docker-compose stop
             sudo docker-compose rm backend
             touch .env

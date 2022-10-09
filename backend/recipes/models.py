@@ -1,10 +1,11 @@
 from django.db import models
+from django.core.validators import MinValueValidator
 
+from backend.settings import MIN_TIME_OF_COOKING, MIN_AMOUNT
 from users.models import User
 
 
 class Ingredient(models.Model):
-    id = models.BigAutoField(primary_key=True)
     name = models.CharField(
         max_length=70,
         blank=False,
@@ -26,7 +27,6 @@ class Ingredient(models.Model):
 
 
 class Tag(models.Model):
-    id = models.BigAutoField(primary_key=True)
     name = models.CharField(
         max_length=50,
         blank=False,
@@ -54,7 +54,6 @@ class Tag(models.Model):
 
 
 class Recipe(models.Model):
-    id = models.BigAutoField(primary_key=True)
     tags = models.ManyToManyField(
         Tag,
         blank=False,
@@ -93,6 +92,9 @@ class Recipe(models.Model):
     )
     cooking_time = models.PositiveSmallIntegerField(
         blank=False,
+        default=1,
+        validators=(MinValueValidator(MIN_TIME_OF_COOKING),
+                    'Время готовки должно быть больше 0'),
         verbose_name='Время приготовления',
     )
     pub_date = models.DateTimeField(
@@ -123,6 +125,9 @@ class RecipeIngredient(models.Model):
         related_name='recipe_ingredient'
     )
     amount = models.PositiveSmallIntegerField(
+        default=1,
+        validators=(MinValueValidator(MIN_AMOUNT),
+                    'Кол-во ингредиентов должно быть больше 0'),
         blank=False,
         verbose_name='Количество',
     )

@@ -1,10 +1,12 @@
 import base64
 
 import webcolors
+from django.db.transaction import atomic
 from django.core.files.base import ContentFile
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 
+from backend.settings import MIN_TIME_OF_COOKING, MIN_AMOUNT
 from recipes.models import (FavoriteRecipe, Ingredient, Recipe,
                             RecipeIngredient, ShoppingCart, Tag)
 from users.models import Subscribe, User
@@ -16,12 +18,11 @@ class Hex2NameColor(serializers.Field):
 
     def to_internal_value(self, data):
         try:
-            data = webcolors.hex_to_name(data)
+            return webcolors.hex_to_name(data)
         except ValueError:
             raise serializers.ValidationError({
                 'detail': 'У этого цвета нет названия',
             })
-        return data
 
 
 class Base64ImageField(serializers.ImageField):
@@ -112,7 +113,12 @@ class IngredientCreateRecipeSerializer(serializers.ModelSerializer):
             int(data['amount'])
         except Exception:
             raise serializers.ValidationError({
-                'detail': 'Время приготовления должно быть числом!',
+                'detail': 'Количество ингредиентов должно быть числом',
+            })
+
+        if data['amount'] < MIN_AMOUNT:
+            raise serializers.ValidationError({
+                'detail': 'Количество ингредиентов должно быть больше 0',
             })
         return data
 
@@ -159,11 +165,12 @@ class RecipeSerializer(serializers.ModelSerializer):
         for ingredient in ingredients:
             ingredient_id = ingredient['id']
             if ingredient_id in ingredients_list:
-                raise serializers.ValidationError(
-                    'Есть повторяющиеся ингредиенты'
-                )
+                raise serializers.ValidationError({
+                    'detail': 'Есть повторяющиеся ингредиенты'
+                })
             ingredients_list.append(ingredient_id)
-        if data['cooking_time'] <= 0:
+
+        if data['cooking_time'] < MIN_TIME_OF_COOKING:
             raise serializers.ValidationError({
                 'detail': 'Время приготовления должно быть больше 0'
             })
@@ -178,6 +185,7 @@ class RecipeSerializer(serializers.ModelSerializer):
             ) for ingredient in ingredients
         ])
 
+    @atomic
     def create(self, validated_data):
         request = self.context.get('request')
         ingredients = validated_data.pop('ingredients')
@@ -187,6 +195,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         recipe.tags.set(tags)
         return recipe
 
+    @atomic
     def update(self, instance, validated_data):
         RecipeIngredient.objects.filter(recipe=instance).delete()
         ingredients = validated_data.pop('ingredients')

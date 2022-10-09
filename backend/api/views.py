@@ -8,6 +8,7 @@ from rest_framework.decorators import action
 from rest_framework.permissions import SAFE_METHODS, AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
+from backend.settings import CONTENT_TYPE, CART_FILENAME
 from users.models import Subscribe, User
 from recipes.models import (FavoriteRecipe, Ingredient, Recipe,
                             RecipeIngredient, ShoppingCart, Tag)
@@ -24,7 +25,7 @@ class UsersViewSet(UserViewSet):
     pagination_class = CustomPagination
 
     @action(
-        methods=['GET'],
+        methods=('GET', ),
         detail=False
     )
     def subscriptions(self, request):
@@ -39,7 +40,7 @@ class UsersViewSet(UserViewSet):
         return self.get_paginated_response(serializer.data)
 
     @action(
-        methods=['POST', 'DELETE'],
+        methods=('POST', 'DELETE'),
         detail=True
     )
     def subscribe(self, request, id):
@@ -49,8 +50,9 @@ class UsersViewSet(UserViewSet):
                 author=get_object_or_404(User, id=id),
                 user=request.user
             )
-            self.perform_destroy(subscription)
-            return Response(status=status.HTTP_204_NO_CONTENT)
+            subscription.delete()
+            return Response({'detail': 'Подписка удалена'},
+                            status=status.HTTP_204_NO_CONTENT)
         serializer = SubscribeSerializer(
             data={
                 'user': request.user.id,
@@ -65,7 +67,6 @@ class UsersViewSet(UserViewSet):
 
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
-    serializer_class = RecipeSerializer
     pagination_class = CustomPagination
     filter_backends = (DjangoFilterBackend,)
     filterset_class = RecipeFilterSet
@@ -74,10 +75,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.request.method in SAFE_METHODS:
             return RecipeListSerializer
-        elif self.action == 'shopping_cart':
-            return ShoppingCartSerializer
-        elif self.action == 'favorite':
-            return FavoriteRecipeSerializer
         return RecipeSerializer
 
     def method_for_actions(self, request, pk, model, serializer):
@@ -90,47 +87,45 @@ class RecipeViewSet(viewsets.ModelViewSet):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-        recipe = model.objects.filter(user=request.user, recipe__id=pk)
+        recipe = get_object_or_404(model, user=request.user, recipe__id=pk)
         recipe.delete()
         return Response({'detail': 'Рецепт удалён'},
                         status=status.HTTP_204_NO_CONTENT)
 
     @action(
-        methods=['POST', 'DELETE'],
+        methods=('POST', 'DELETE'),
         detail=True,
         permission_classes=(IsAuthenticated, )
     )
     def favorite(self, request, pk):
-        serializer = self.get_serializer_class()
         return self.method_for_actions(
             request=request,
             pk=pk,
             model=FavoriteRecipe,
-            serializer=serializer
+            serializer=FavoriteRecipeSerializer
         )
 
     @action(
-        methods=['POST', 'DELETE'],
+        methods=('POST', 'DELETE'),
         detail=True,
         permission_classes=(IsAuthenticated, )
     )
     def shopping_cart(self, request, pk):
-        serializer = self.get_serializer_class()
         return self.method_for_actions(
             request=request,
             pk=pk,
             model=ShoppingCart,
-            serializer=serializer
+            serializer=ShoppingCartSerializer
         )
 
     @action(
         detail=False,
-        methods=['GET'],
+        methods=('GET', ),
         permission_classes=(IsAuthenticated,)
     )
     def download_shopping_cart(self, request):
-        response = HttpResponse(content_type='text/plain')
-        response['Content-Disposition'] = 'filename=shopping-cart.txt'
+        response = HttpResponse(CONTENT_TYPE)
+        response['Content-Disposition'] = CART_FILENAME
         shopping_list = RecipeIngredient.objects.filter(
             recipe__cart__user=request.user
         ).values(
