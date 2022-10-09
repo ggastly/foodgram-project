@@ -29,13 +29,8 @@ class User(AbstractUser):
         help_text='Фамилия пользователя',
         max_length=30,
     )
-
-    is_subscribed = models.BooleanField(
-        verbose_name='Подписка',
-        help_text='Подписан ли пользователь',
-        default=False,
-    )
-
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
     class Meta:
         ordering = ('id', )
         verbose_name = 'Пользователь'
@@ -45,7 +40,7 @@ class User(AbstractUser):
         return self.username
 
 
-class Follow(models.Model):
+class Subscribe(models.Model):
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -62,6 +57,9 @@ class Follow(models.Model):
     )
 
     class Meta:
+        verbose_name = 'Подписка'
+        verbose_name_plural = 'Подписки'
+        ordering = ['-id']
         constraints = (
             models.UniqueConstraint(
                 fields=('user', 'author'),
