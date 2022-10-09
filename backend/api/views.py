@@ -1,3 +1,4 @@
+from backend.settings import CART_FILENAME, CONTENT_TYPE
 from django.db.models import F, Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
@@ -8,10 +9,10 @@ from rest_framework.decorators import action
 from rest_framework.permissions import SAFE_METHODS, AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
-from backend.settings import CONTENT_TYPE, CART_FILENAME
 from users.models import Subscribe, User
 from recipes.models import (FavoriteRecipe, Ingredient, Recipe,
                             RecipeIngredient, ShoppingCart, Tag)
+
 from api.filters import IngredientSearchFilter, RecipeFilterSet
 from api.pagination import CustomPagination
 from api.permissions import IsAuthenticatedOwnerOrReadOnly

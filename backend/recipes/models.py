@@ -1,7 +1,7 @@
-from django.db import models
+from backend.settings import MIN_AMOUNT, MIN_TIME_OF_COOKING
 from django.core.validators import MinValueValidator
+from django.db import models
 
-from backend.settings import MIN_TIME_OF_COOKING, MIN_AMOUNT
 from users.models import User
 
 

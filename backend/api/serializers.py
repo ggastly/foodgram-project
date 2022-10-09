@@ -1,15 +1,15 @@
 import base64
 
 import webcolors
-from django.db.transaction import atomic
+from backend.settings import MIN_AMOUNT, MIN_TIME_OF_COOKING
 from django.core.files.base import ContentFile
+from django.db.transaction import atomic
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 
-from backend.settings import MIN_TIME_OF_COOKING, MIN_AMOUNT
+from users.models import Subscribe, User
 from recipes.models import (FavoriteRecipe, Ingredient, Recipe,
                             RecipeIngredient, ShoppingCart, Tag)
-from users.models import Subscribe, User
 
 
 class Hex2NameColor(serializers.Field):
