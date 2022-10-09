@@ -8,3 +8,4 @@ exclude =
 extend-ignore =
     I001
     I004
+    R504
