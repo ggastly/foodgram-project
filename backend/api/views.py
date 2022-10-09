@@ -8,6 +8,9 @@ from rest_framework.decorators import action
 from rest_framework.permissions import SAFE_METHODS, AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
+from users.models import Subscribe, User
+from recipes.models import (FavoriteRecipe, Ingredient, Recipe,
+                            RecipeIngredient, ShoppingCart, Tag)
 from api.filters import IngredientSearchFilter, RecipeFilterSet
 from api.pagination import CustomPagination
 from api.permissions import IsAuthenticatedOwnerOrReadOnly
@@ -15,9 +18,6 @@ from api.serializers import (FavoriteRecipeSerializer, IngredientSerializer,
                              RecipeListSerializer, RecipeSerializer,
                              ShoppingCartSerializer, SubscribeListSerializer,
                              SubscribeSerializer, TagSerializer)
-from recipes.models import (FavoriteRecipe, Ingredient, Recipe,
-                            RecipeIngredient, ShoppingCart, Tag)
-from users.models import Subscribe, User
 
 
 class UsersViewSet(UserViewSet):
