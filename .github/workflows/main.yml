@@ -73,7 +73,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
           script: |
-            sudo docker-compose down
+            sudo docker-compose stop
             sudo docker-compose zolkovd/foodgram-backend:latest
             touch .env
             echo SECRET_KEY='${{ secrets.SECRET_KEY }}' >> .env 
