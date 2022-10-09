@@ -5,7 +5,6 @@ exclude =
     manage.py
     settings.py
 
-#flake сошел с ума на этих ошибках
 extend-ignore =
     I001
     I004
