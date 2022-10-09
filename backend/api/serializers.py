@@ -1,15 +1,19 @@
 import base64
+
 import webcolors
 from django.core.files.base import ContentFile
+from django.shortcuts import get_object_or_404
+from rest_framework import serializers
+
 from recipes.models import (FavoriteRecipe, Ingredient, Recipe,
                             RecipeIngredient, ShoppingCart, Tag)
 from users.models import Subscribe, User
-from rest_framework import serializers
-from django.shortcuts import get_object_or_404
+
 
 class Hex2NameColor(serializers.Field):
     def to_representation(self, value):
         return value
+
     def to_internal_value(self, data):
         try:
             data = webcolors.hex_to_name(data)
@@ -50,7 +54,9 @@ class UserSerializer(serializers.ModelSerializer):
         if request.user.is_anonymous:
             return False
         return Subscribe.objects.filter(
-            user = request.user, author=obj.pk).exists()
+            user=request.user,
+            author=obj.pk
+        ).exists()
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -68,7 +74,6 @@ class IngredientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ingredient
         fields = ('id', 'name', 'measurement_unit')
-
 
 
 class IngredientRecipeSerializer(serializers.ModelSerializer):
@@ -105,7 +110,7 @@ class IngredientCreateRecipeSerializer(serializers.ModelSerializer):
     def validate(self, data):
         try:
             int(data['amount'])
-        except:
+        except Exception:
             raise serializers.ValidationError({
                 'detail': 'Время приготовления должно быть числом!',
             })
@@ -130,7 +135,10 @@ class RecipeShortInfo(serializers.ModelSerializer):
 
 
 class RecipeSerializer(serializers.ModelSerializer):
-    tags = serializers.PrimaryKeyRelatedField(queryset=Tag.objects.all(), many=True)
+    tags = serializers.PrimaryKeyRelatedField(
+        queryset=Tag.objects.all(),
+        many=True
+    )
     image = Base64ImageField(required=True, allow_null=False)
     ingredients = IngredientCreateRecipeSerializer(many=True)
 
@@ -199,6 +207,7 @@ class RecipeSerializer(serializers.ModelSerializer):
             }
         ).data
 
+
 class RecipeListSerializer(serializers.ModelSerializer):
     author = UserSerializer(read_only=True)
     ingredients = serializers.SerializerMethodField()
@@ -221,7 +230,6 @@ class RecipeListSerializer(serializers.ModelSerializer):
             'cooking_time'
         )
 
-
     def get_ingredients(self, obj):
         queryset = RecipeIngredient.objects.filter(recipe=obj)
         return IngredientRecipeSerializer(queryset, many=True).data
@@ -230,7 +238,10 @@ class RecipeListSerializer(serializers.ModelSerializer):
         user = self.context.get('request').user
         if user.is_anonymous:
             return False
-        return FavoriteRecipe.objects.filter(user=user.id, recipe=obj.id).exists()
+        return FavoriteRecipe.objects.filter(
+            user=user.id,
+            recipe=obj.id
+        ).exists()
 
     def get_is_in_shopping_cart(self, obj):
         user = self.context.get('request').user
@@ -340,7 +351,9 @@ class FavoriteRecipeSerializer(serializers.ModelSerializer):
         if not request or request.user.is_anonymous:
             return False
         recipe = data['recipe']
-        if FavoriteRecipe.objects.filter(user=request.user, recipe=recipe).exists():
+        if FavoriteRecipe.objects.filter(user=request.user,
+                                         recipe=recipe
+                                         ).exists():
             raise serializers.ValidationError({
                 'detail': 'Рецепт уже в избранном'
             })

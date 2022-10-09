@@ -3,21 +3,21 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet
-from recipes.models import (FavoriteRecipe, Ingredient, Recipe,
-                            RecipeIngredient, ShoppingCart, Tag)
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
-from rest_framework.permissions import (AllowAny, IsAuthenticated,
-                                        SAFE_METHODS)
+from rest_framework.permissions import SAFE_METHODS, AllowAny, IsAuthenticated
 from rest_framework.response import Response
-from users.models import Subscribe, User
 
 from api.filters import IngredientSearchFilter, RecipeFilterSet
 from api.pagination import CustomPagination
 from api.permissions import IsAuthenticatedOwnerOrReadOnly
-from api.serializers import (IngredientSerializer, RecipeListSerializer,
-                             RecipeSerializer, ShoppingCartSerializer, SubscribeListSerializer,
-                             SubscribeSerializer, TagSerializer, FavoriteRecipeSerializer)
+from api.serializers import (FavoriteRecipeSerializer, IngredientSerializer,
+                             RecipeListSerializer, RecipeSerializer,
+                             ShoppingCartSerializer, SubscribeListSerializer,
+                             SubscribeSerializer, TagSerializer)
+from recipes.models import (FavoriteRecipe, Ingredient, Recipe,
+                            RecipeIngredient, ShoppingCart, Tag)
+from users.models import Subscribe, User
 
 
 class UsersViewSet(UserViewSet):
@@ -80,7 +80,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
             return FavoriteRecipeSerializer
         return RecipeSerializer
 
-
     def method_for_actions(self, request, pk, model, serializer):
         if request.method == 'POST':
             serializer = serializer(
@@ -95,7 +94,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
         recipe.delete()
         return Response({'detail': 'Рецепт удалён'},
                         status=status.HTTP_204_NO_CONTENT)
-
 
     @action(
         methods=['POST', 'DELETE'],
@@ -132,7 +130,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     )
     def download_shopping_cart(self, request):
         response = HttpResponse(content_type='text/plain')
-        response['Content-Disposition'] = 'attachment; filename=shopping-cart.txt'
+        response['Content-Disposition'] = 'filename=shopping-cart.txt'
         shopping_list = RecipeIngredient.objects.filter(
             recipe__cart__user=request.user
         ).values(
@@ -143,9 +141,12 @@ class RecipeViewSet(viewsets.ModelViewSet):
         )
         result = []
         for ingredient in shopping_list:
-            result.append(f'{ingredient[0]} ({ingredient[2]}) – {ingredient[1]}\n')
+            result.append(
+                f'{ingredient[0]} ({ingredient[2]}) – {ingredient[1]}\n'
+            )
         response.writelines(result)
         return response
+
 
 class TagViewSet(viewsets.ModelViewSet):
     queryset = Tag.objects.all()
@@ -156,6 +157,6 @@ class TagViewSet(viewsets.ModelViewSet):
 class IngredientViewSet(viewsets.ModelViewSet):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
-    permission_classes = (AllowAny,) 
+    permission_classes = (AllowAny,)
     filter_backends = (IngredientSearchFilter,)
     search_fields = ('^name',)

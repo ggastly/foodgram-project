@@ -19,8 +19,6 @@ load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv('SECRET_KEY')
 
@@ -37,7 +35,7 @@ ALLOWED_HOSTS = [
 AUTH_USER_MODEL = 'users.User'
 
 CORS_ORIGIN_ALLOW_ALL = True
-CORS_URLS_REGEX = r'^/api/.*$' 
+CORS_URLS_REGEX = r'^/api/.*$'
 
 # Application definition
 
@@ -55,7 +53,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'djoser',
-    'django_filters',    
+    'django_filters',
 ]
 
 MIDDLEWARE = [
@@ -152,7 +150,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.AllowAny', 
+        'rest_framework.permissions.AllowAny',
     ],
 
     'DEFAULT_AUTHENTICATION_CLASSES': [

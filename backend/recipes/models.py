@@ -1,5 +1,7 @@
 from django.db import models
+
 from users.models import User
+
 
 class Ingredient(models.Model):
     id = models.BigAutoField(primary_key=True)
@@ -46,6 +48,7 @@ class Tag(models.Model):
     class Meta:
         verbose_name = 'Тег'
         verbose_name_plural = 'Теги'
+
     def __str__(self):
         return self.name
 
@@ -80,7 +83,7 @@ class Recipe(models.Model):
         verbose_name='Название рецепта',
     )
     image = models.ImageField(
-        upload_to='recipes/images/', 
+        upload_to='recipes/images/',
         blank=False,
         verbose_name='Финальный результат',
         )
@@ -131,6 +134,7 @@ class RecipeIngredient(models.Model):
     def __str__(self):
         return f'{self.recipe.name}: {self.ingredient.name} – {self.amount}'
 
+
 class ShoppingCart(models.Model):
     user = models.ForeignKey(
         User,
@@ -149,6 +153,7 @@ class ShoppingCart(models.Model):
 
     def __str__(self):
         return f'{self.recipe.name} в списке продуктов {self.user}'
+
 
 class FavoriteRecipe(models.Model):
     user = models.ForeignKey(
