@@ -1,4 +1,3 @@
-from backend.settings import CART_FILENAME, CONTENT_TYPE
 from django.db.models import F, Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
@@ -20,6 +19,10 @@ from api.serializers import (FavoriteRecipeSerializer, IngredientSerializer,
                              RecipeListSerializer, RecipeSerializer,
                              ShoppingCartSerializer, SubscribeListSerializer,
                              SubscribeSerializer, TagSerializer)
+
+
+CONTENT_TYPE = 'text/plain'
+CART_FILENAME = 'filename=shopping-cart.txt'
 
 
 class UsersViewSet(UserViewSet):

@@ -24,19 +24,11 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 
 MIN_TIME_OF_COOKING = 1
 MIN_AMOUNT = 1
-CONTENT_TYPE = 'text/plain'
-CART_FILENAME = 'filename=shopping-cart.txt'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DJANGO_DEBUG', False)
 
-ALLOWED_HOSTS = [
-    '*',
-    'localhost',
-    '51.250.79.26'
-    '127.0.0.1',
-    'http://localhost:3000',
-]
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
 
 AUTH_USER_MODEL = 'users.User'
 

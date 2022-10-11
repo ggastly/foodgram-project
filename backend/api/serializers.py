@@ -118,7 +118,8 @@ class IngredientCreateRecipeSerializer(serializers.ModelSerializer):
 
         if data['amount'] < MIN_AMOUNT:
             raise serializers.ValidationError({
-                'detail': 'Количество ингредиентов должно быть больше 0',
+                'detail': ('Количество ингредиентов '
+                           f'должно быть больше {MIN_AMOUNT}'),
             })
         return data
 
@@ -172,7 +173,8 @@ class RecipeSerializer(serializers.ModelSerializer):
 
         if data['cooking_time'] < MIN_TIME_OF_COOKING:
             raise serializers.ValidationError({
-                'detail': 'Время приготовления должно быть больше 0'
+                'detail': ('Время приготовления должно быть '
+                           f'больше {MIN_TIME_OF_COOKING}')
             })
         return data
 
