@@ -18,7 +18,7 @@ class UsersAdmin(BaseAdminSettings):
     )
     list_display_links = ('id', 'username')
     search_fields = ('username', )
-    list_filter = ('superuser', 'is_stuff')
+    list_filter = ('is_superuser', 'is_stuff')
 
 
 @admin.register(Subscribe)
