@@ -33,7 +33,7 @@ class IngredientAdmin(BaseAdminSettings):
     )
     list_display_links = ('name',)
     search_fields = ('name',)
-    list_filter = ('name', )
+    list_filter = ('name', 'measurement_unit')
 
 
 @admin.register(Recipe)
@@ -47,7 +47,6 @@ class RecipeAdmin(BaseAdminSettings):
     search_fields = ('name',)
     list_filter = ('author', 'name', 'tags')
     readonly_fields = ('in_favorite',)
-    filter_horizontal = ('tags',)
     inlines = (RecipeIngredientInline,)
     ordering = ('-pub_date',)
 
@@ -62,18 +61,23 @@ class RecipeIngredientAdmin(admin.ModelAdmin):
         'ingredient',
         'amount',
     )
-    list_filter = ('recipe', 'ingredient')
+    list_filter = (
+        'recipe',
+        'ingredient',
+        'ingredient.measurment_unit',
+    )
+    search_fields = ('recipe', 'user.username', 'user.email')
 
 
 @admin.register(FavoriteRecipe)
 class FavoriteRecipeAdmin(admin.ModelAdmin):
-    list_display = ('user', )
-    list_filter = ('user', )
-    search_fields = ('user', 'recipe')
+    list_display = ('user', 'recipe')
+    list_filter = ('tags', )
+    search_fields = ('user.username', 'user.email', 'recipe')
 
 
 @admin.register(ShoppingCart)
 class ShoppingCartAdmin(admin.ModelAdmin):
-    list_display = ('user', )
-    list_filter = ('user', )
-    search_fields = ('user', )
+    list_display = ('user', 'recipe')
+    list_filter = ('tags', )
+    search_fields = ('recipe', 'user.username', 'user.email')
