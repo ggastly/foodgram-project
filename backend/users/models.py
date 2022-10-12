@@ -30,6 +30,10 @@ class User(AbstractUser):
         help_text='Фамилия пользователя',
         max_length=30,
     )
+    
+    is_staff = models.BooleanField(default=False)
+    is_superuser = models.BooleanField(default=False)
+
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ('username', 'first_name', 'last_name')
 

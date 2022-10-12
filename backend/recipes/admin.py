@@ -64,20 +64,20 @@ class RecipeIngredientAdmin(admin.ModelAdmin):
     list_filter = (
         'recipe',
         'ingredient',
-        'ingredient.measurment_unit',
+        'ingredient__measurement_unit',
     )
-    search_fields = ('recipe', 'user.username', 'user.email')
+    search_fields = ('recipe', 'user__username', 'user__email')
 
 
 @admin.register(FavoriteRecipe)
 class FavoriteRecipeAdmin(admin.ModelAdmin):
     list_display = ('user', 'recipe')
-    list_filter = ('tags', )
-    search_fields = ('user.username', 'user.email', 'recipe')
+    list_filter = ('recipe__tags', )
+    search_fields = ('user__username', 'user__email', 'recipe')
 
 
 @admin.register(ShoppingCart)
 class ShoppingCartAdmin(admin.ModelAdmin):
     list_display = ('user', 'recipe')
-    list_filter = ('tags', )
-    search_fields = ('recipe', 'user.username', 'user.email')
+    list_filter = ('recipe__tags', )
+    search_fields = ('recipe', 'user__username', 'user__email')
