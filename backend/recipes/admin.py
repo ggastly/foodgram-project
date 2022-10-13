@@ -66,7 +66,7 @@ class RecipeIngredientAdmin(admin.ModelAdmin):
         'ingredient',
         'ingredient__measurement_unit',
     )
-    search_fields = ('recipe', '^user__username', '^user__email')
+    search_fields = ('recipe', 'user__username', 'user__email')
 
 
 @admin.register(FavoriteRecipe)
