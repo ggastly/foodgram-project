@@ -9,7 +9,7 @@ services:
       - ./.env
 
   backend:
-    image: zolkovd/foodgram-backend:latest
+    image: zolkovd/foodgram-backend:v3
     restart: always
     volumes:
       - static_value:/app/static/
