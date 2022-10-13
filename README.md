@@ -29,7 +29,7 @@
 
 Данные для суперюзера:
 login: admin@gmail.com
-password: foodgramadmin
+password: foodgramadm
 
 ## Запуск проекта с помощью Docker
 
