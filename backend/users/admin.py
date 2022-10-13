@@ -28,5 +28,8 @@ class SubscribeAdmin(admin.ModelAdmin):
         'user',
         'author'
     )
-    list_display_links = ('id', 'user')
-    search_fields = ('user__username', 'user__email')
+    list_display_links = ('id', 'user', 'author')
+    search_fields = (
+        'user__username',
+        'user__email'
+    )
