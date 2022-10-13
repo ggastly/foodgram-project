@@ -71,7 +71,7 @@ password: foodgramadmin
     ```
 
 6. Готово! Ниже представлены доступные адреса проекта:
-    -  http://localhost/ - главная страница сайта;
-    -  http://localhost/admin/ - админ панель;
-    -  http://localhost/api/ - API проекта
-    -  http://localhost/api/docs/redoc.html - документация к API
+    -  http://178.154.205.22/ - главная страница сайта;
+    -  http://178.154.205.22/admin/ - админ панель;
+    -  http://178.154.205.22/api/ - API проекта
+    -  http://178.154.205.22/api/docs/redoc.html - документация к API
