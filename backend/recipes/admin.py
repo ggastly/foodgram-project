@@ -44,8 +44,8 @@ class RecipeAdmin(BaseAdminSettings):
         'in_favorite'
     )
     list_display_links = ('name',)
-    search_fields = ('name',)
-    list_filter = ('author', 'name', 'tags')
+    search_fields = ('name', 'author')
+    list_filter = ('tags', )
     readonly_fields = ('in_favorite',)
     inlines = (RecipeIngredientInline,)
     ordering = ('-pub_date',)
@@ -66,7 +66,7 @@ class RecipeIngredientAdmin(admin.ModelAdmin):
         'ingredient',
         'ingredient__measurement_unit',
     )
-    search_fields = ('recipe', 'user__username', 'user__email')
+    search_fields = ('recipe', '^user__username', '^user__email')
 
 
 @admin.register(FavoriteRecipe)

@@ -28,7 +28,7 @@ MIN_AMOUNT = 1
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DJANGO_DEBUG', False)
 
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '178.154.222.248:3000').split(',')
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '178.154.205.22:3000').split(',')
 
 AUTH_USER_MODEL = 'users.User'
 
