@@ -48,7 +48,7 @@ jobs:
         uses: docker/build-push-action@v2 
         with:
           push: true
-          tags: zolkovd/foodgram-backend:latest
+          tags: zolkovd/foodgram-backend:v3
           context: backend/
           file: ./backend/Dockerfile
           no-cache: true
